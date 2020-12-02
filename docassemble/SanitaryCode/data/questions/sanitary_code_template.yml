@@ -51,7 +51,7 @@ code: |
   allowed_courts = interview_metadata["sanitary_code_template"]["allowed courts"]
   nav.set_section('review_sanitary_code_template')
   user_role = 'plaintiff'
-  defendant_address
+  other_parties[0].address.address
   number_of_apartments
   rent_amount
   if not inspection_yesno:
@@ -67,33 +67,33 @@ code: |
   set_progress(18.18)
   docket_numbers
   str(plaintiffs)
-  str(defendants)
-  plaintiffs[0].address.on_one_line()
+  str(other_parties)
+  users[0].address.on_one_line()
   set_progress(27.27)
-  plaintiff1
-  plaintiff2
-  plaintiffs[0].address.address
-  plaintiffs[1].address.address
+  users[0]
+  users[1]
+  users[0].address.address
+  users[1].address.address
   set_progress(36.36)
-  plaintiffs[1].address.zip
-  plaintiffs[0].address.state
-  plaintiffs[1].address.state
-  plaintiffs[0].address.city
-  plaintiffs[1].address.city
+  users[1].address.zip
+  users[0].address.state
+  users[1].address.state
+  users[0].address.city
+  users[1].address.city
   set_progress(45.45)
-  plaintiffs[0].address.zip
-  plaintiffs[1].phone_number
-  plaintiffs[0].phone_number
-  plaintiffs[0].email
-  plaintiffs[1].email
+  users[0].address.zip
+  users[1].phone_number
+  users[0].phone_number
+  users[0].email
+  users[1].email
   set_progress(54.55)
   signature_date
   # Save (anonymized) interview statistics.
   store_variables_snapshot(data={'zip': users[0].address.zip})
   sanitary_code_template_preview_question # Pre-canned preview screen
   basic_questions_signature_flow
-  plaintiffs[0].signature
-  plaintiffs[1].signature
+  users[0].signature
+  users[1].signature
   sanitary_code_template = True
 ---
 comment: |
@@ -113,13 +113,13 @@ subquestion: |
   Here is a preview of the form you'll sign on the next page. 
   
    ${ pdf_concatenate(sanitary_code_template_attachment['preview'], filename='sanitary_code_template.pdf')}
----
-id: defendant address
-question: |
-  What is the Defendant's address?
-fields:
-  - 'Defendant address': defendant_address
-    maxlength: 51
+#---
+#id: defendant address
+#question: |
+#  What is the Defendant's address?
+#fields:
+#  - 'Defendant address': other_parties[0].address.address
+#    maxlength: 51
 ---
 id: apartments number
 question: |
@@ -226,28 +226,28 @@ attachment:
       - "court_name": ${ str(courts[0]) }
       - "docket_number": ${ docket_numbers }
       - "plaintiffs": ${ str(plaintiffs) }
-      - "defendants": ${ str(defendants) }
-      - "plaintiff_address_on_one_line": ${ plaintiffs[0].address.on_one_line() }
+      - "defendants": ${ str(other_parties) }
+      - "plaintiff_address_on_one_line": ${ users[0].address.on_one_line() }
       # If it is a signature, test which file version we're expecting. leave it empty unless it's the final attachment version
-      - "plaintiff2_signature": ${ plaintiffs[1].signature if i == 'final' else '' }
+      - "plaintiff2_signature": ${ users[1].signature if i == 'final' else '' }
       # If it is a signature, test which file version we're expecting. leave it empty unless it's the final attachment version
-      - "plaintiff1_signature": ${ plaintiffs[0].signature if i == 'final' else '' }
-      - "plaintiff1": ${ plaintiff1 }
-      - "plaintiff2": ${ plaintiff2 }
-      - "plaintiff1_address_street": ${ plaintiffs[0].address.address }
-      - "plaintiff2_address_street": ${ plaintiffs[1].address.address }
-      - "plaintiff2_address_zip": ${ plaintiffs[1].address.zip }
-      - "plaintiff1_address_state": ${ plaintiffs[0].address.state }
-      - "plaintiff2_address_state": ${ plaintiffs[1].address.state }
-      - "plaintiff1_address_city": ${ plaintiffs[0].address.city }
-      - "plaintiff2_address_city": ${ plaintiffs[1].address.city }
-      - "plaintiff1_address_zip": ${ plaintiffs[0].address.zip }
-      - "plaintiff2_phone": ${ plaintiffs[1].phone_number }
-      - "plaintiff1_phone": ${ plaintiffs[0].phone_number }
-      - "plaintiff1_email": ${ plaintiffs[0].email }
-      - "plaintiff2_email": ${ plaintiffs[1].email }
+      - "plaintiff1_signature": ${ users[0].signature if i == 'final' else '' }
+      - "plaintiff1": ${ users[0] }
+      - "plaintiff2": ${ users[1] }
+      - "plaintiff1_address_street": ${ users[0].address.address }
+      - "plaintiff2_address_street": ${ users[1].address.address }
+      - "plaintiff2_address_zip": ${ users[1].address.zip }
+      - "plaintiff1_address_state": ${ users[0].address.state }
+      - "plaintiff2_address_state": ${ users[1].address.state }
+      - "plaintiff1_address_city": ${ users[0].address.city }
+      - "plaintiff2_address_city": ${ users[1].address.city }
+      - "plaintiff1_address_zip": ${ users[0].address.zip }
+      - "plaintiff2_phone": ${ users[1].phone_number }
+      - "plaintiff1_phone": ${ users[0].phone_number }
+      - "plaintiff1_email": ${ users[0].email }
+      - "plaintiff2_email": ${ users[1].email }
       - "signature_date": ${ signature_date }
-      - "defendant_address": ${ defendant_address }
+      - "defendant_address": ${ other_parties[0].address.on_one_line() }
       - "number_of_apartments": ${ number_of_apartments }
       - "occupied_apartments": ${ occupied_apartments }
       - "rent_amount": ${ currency(rent_amount ) }
@@ -270,10 +270,10 @@ question: |
 subquestion: |
   Edit your answers below
 review: 
-  - Edit: defendant_address
+  - Edit: other_parties[0].address
     button: |
       Defendant address:
-      ${ defendant_address }
+      ${ other_parties[0].address }
   - Edit: number_of_apartments
     button: |
       Number of apartments:
@@ -346,74 +346,74 @@ review:
     button: |
       plaintiffs:
       ${ plaintiffs }
-  - Edit: defendants
+  - Edit: other_parties
     button: |
-      defendants:
-      ${ defendants }
-  - Edit: plaintiffs[0].address.address
+      Defendants:
+      ${ other_parties }
+  - Edit: users[0].address.address
     button: |
-      plaintiffs[0].address.address:
-      ${ plaintiffs[0].address.address }
-  - Edit: plaintiffs[1].signature
+      users[0].address.address:
+      ${ users[0].address.address }
+  - Edit: users[1].signature
     button: |
-      plaintiffs[1].signature:
-      ${ plaintiffs[1].signature }
-  - Edit: plaintiffs[0].signature
+      users[1].signature:
+      ${ users[1].signature }
+  - Edit: users[0].signature
     button: |
-      plaintiffs[0].signature:
-      ${ plaintiffs[0].signature }
-  - Edit: plaintiff1
+      users[0].signature:
+      ${ users[0].signature }
+  - Edit: users[0]
     button: |
-      plaintiff1:
-      ${ plaintiff1 }
-  - Edit: plaintiff2
+      users[0]:
+      ${ users[0] }
+  - Edit: users[1]
     button: |
-      plaintiff2:
-      ${ plaintiff2 }
-  - Edit: plaintiffs[1].address.address
+      users[1]:
+      ${ users[1] }
+  - Edit: users[1].address.address
     button: |
-      plaintiffs[1].address.address:
-      ${ plaintiffs[1].address.address }
-  - Edit: plaintiffs[1].address.zip
+      users[1].address.address:
+      ${ users[1].address.address }
+  - Edit: users[1].address.zip
     button: |
-      plaintiffs[1].address.zip:
-      ${ plaintiffs[1].address.zip }
-  - Edit: plaintiffs[0].address.state
+      users[1].address.zip:
+      ${ users[1].address.zip }
+  - Edit: users[0].address.state
     button: |
-      plaintiffs[0].address.state:
-      ${ plaintiffs[0].address.state }
-  - Edit: plaintiffs[1].address.state
+      users[0].address.state:
+      ${ users[0].address.state }
+  - Edit: users[1].address.state
     button: |
-      plaintiffs[1].address.state:
-      ${ plaintiffs[1].address.state }
-  - Edit: plaintiffs[0].address.city
+      users[1].address.state:
+      ${ users[1].address.state }
+  - Edit: users[0].address.city
     button: |
-      plaintiffs[0].address.city:
-      ${ plaintiffs[0].address.city }
-  - Edit: plaintiffs[1].address.city
+      users[0].address.city:
+      ${ users[0].address.city }
+  - Edit: users[1].address.city
     button: |
-      plaintiffs[1].address.city:
-      ${ plaintiffs[1].address.city }
-  - Edit: plaintiffs[0].address.zip
+      users[1].address.city:
+      ${ users[1].address.city }
+  - Edit: users[0].address.zip
     button: |
-      plaintiffs[0].address.zip:
-      ${ plaintiffs[0].address.zip }
-  - Edit: plaintiffs[1].phone_number
+      users[0].address.zip:
+      ${ users[0].address.zip }
+  - Edit: users[1].phone_number
     button: |
-      plaintiffs[1].phone_number:
-      ${ plaintiffs[1].phone_number }
-  - Edit: plaintiffs[0].phone_number
+      users[1].phone_number:
+      ${ users[1].phone_number }
+  - Edit: users[0].phone_number
     button: |
-      plaintiffs[0].phone_number:
-      ${ plaintiffs[0].phone_number }
-  - Edit: plaintiffs[0].email
+      users[0].phone_number:
+      ${ users[0].phone_number }
+  - Edit: users[0].email
     button: |
-      plaintiffs[0].email:
-      ${ plaintiffs[0].email }
-  - Edit: plaintiffs[1].email
+      users[0].email:
+      ${ users[0].email }
+  - Edit: users[1].email
     button: |
-      plaintiffs[1].email:
-      ${ plaintiffs[1].email }
+      users[1].email:
+      ${ users[1].email }
   - Edit: signature_date
     button: |
       signature_date:
