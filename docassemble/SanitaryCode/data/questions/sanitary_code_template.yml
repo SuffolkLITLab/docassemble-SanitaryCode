@@ -65,7 +65,6 @@ code: |
   courts[0].address.county
   str(courts[0])
   set_progress(18.18)
-  docket_numbers
   str(plaintiffs)
   str(other_parties)
   users[0].address.on_one_line()
@@ -82,9 +81,9 @@ code: |
   users[1].address.city
   set_progress(45.45)
   users[0].address.zip
-  users[1].phone_number
   users[0].phone_number
   users[0].email
+  users[1].phone_number
   users[1].email
   set_progress(54.55)
   signature_date
@@ -127,11 +126,13 @@ question: |
 fields:
   - 'Number of apartments in the building': number_of_apartments
     datatype: number
-  - 'Number of occupied apartments in the building': occupied_apartments
+  - 'Number of those apartments which are occupied': occupied_apartments
     datatype: number
 ---
 id: rent
 question: |
+  Rent
+subquestion: |
   Enter the amount of rent you pay and the rate at which you pay that rent (i.e. per week, per month, etc.)
 fields:
   - 'Amount that you pay in rent': rent_amount
@@ -154,26 +155,28 @@ fields:
 ---
 id: future inspections
 question: |
-  Do you have any future inspections scheduled?
+  Do you have any future inspections with an official from a code enforcement agency scheduled?
 fields:
   - 'Future inspection?': future_inspection_yesno
     datatype: yesnoradio
   - 'Future inspector name': future_inspector_name
-    show if: future_inspector_yesno
+    show if: future_inspection_yesno
     maxlength: 36
   - 'Date of future inspection': future_inspection_date
-    show if: future_inspector_yesno
+    show if: future_inspection_yesno
     datatype: date
 ---
 id: Order details
 question: |
-  Are you requesting that the court issues a restraining order, injunction or other relief against the landlord?
+  Requesting an Order from the court
 subquestion: |
-  If so, what do you wish that the court orders the landlord to do?
+  Are you requesting that the court issues a restraining order, injunction or other relief against the landlord?
+
+  If so, what do you want the court to order the landlord to do?
 fields:
   - 'Do you wish for the court to issue an order?': order_yesno
     datatype: yesnoradio
-  - 'What do you wish for the order to ask the landlord to do?': order_description
+  - 'What do you want the order to ask of the landlord?': order_description
     input type: area
     show if: order_yesno
     maxlength: 396
