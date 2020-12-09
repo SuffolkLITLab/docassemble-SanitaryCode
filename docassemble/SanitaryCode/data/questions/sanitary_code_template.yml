@@ -212,15 +212,15 @@ fields:
 ---
 id: Order details
 question: |
-  Requesting any additional orders or relief from the court
+  Do you want to ask the judge for anything else?
 subquestion: |
-  Are you requesting that **along with the Order of Notice and order to make repairs** that the court issues a restraining order, injunction or other relief against the landlord?
+ As well as the **Order of Notice** and **order to make repairs**, you can ask the judge to give you a restraining order, injunction or other remedy against your landlord
 
-  If so, what do you need the court to order the landlord to do?
+  What do you need the judge to make your landlord to do?
 fields:
-  - 'Do you need for the court to issue an additional order?': order_yesno
+  - 'Do you need for the judge to give you something else?': order_yesno
     datatype: yesnoradio
-  - 'What do you need the court to order the landlord to do': order_description
+  - 'What do you need the judge to make your landlord do': order_description
     input type: area
     show if: order_yesno
     maxlength: 396
