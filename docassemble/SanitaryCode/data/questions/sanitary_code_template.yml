@@ -177,7 +177,7 @@ fields:
     choices:
       - Daily
       - Weekly
-      - Bi-weekly
+      - Every two weeks
       - Monthly
       - Every 2 months
       - Every 3 months
