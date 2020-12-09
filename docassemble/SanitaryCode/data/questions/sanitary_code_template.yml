@@ -111,14 +111,23 @@ id: Petition to Enforce Sanitary Code
 question: |
   Tenant petition for the enforcement of the state sanitary code purusant to G.L c. 111 §127C-I
 subquestion: |
-  The primary purpose of this form is to allow tenants to quickly go to court and ask that the court order the landlord to make repairs, especially emergency repairs.
+  As a tenant, you can use this form to quickly ask the judge to:
   
-  You can also use this petition to ask a judge to lower your rent to the *fair rental value* of your apartment or order you to pay this amount to the court while the landlord makes the repairs. In addition, a tenant can use this form to ask the court to appoint a *receiver*, or temporary landlord.
+  * force your landlord to make repairs, especially emergency repairs.
+  * lower your rent to the *fair rental value*, which is the amount your landlord could reasonably expect to get in rent.
+  * allow you to pay your rent to the court while your landlord makes the repairs.
+  * appoint a *receiver* or temporary landlord.
   
-  **In order for this Petition to be successful you need to have had an inspection by a code enforcement agency already done OR have an inspection scheduled within 24 hours of the FILING of this Petition with the court**
-  
-  Have you met the inspection requirements necessary for this Petition to be successful?
-yesno: sanitary_code_template_intro
+  **In order for you to be successful, you need to have already had an inspection by a code enforcement agency OR have an inspection booked within 24 hours of submitting  this form**
+
+fields:
+  - I have had inspection: has_inspection_complete
+    datatype: yesnoradio
+  - I have booked and inspection: sanitary_code_template_intro
+    datatype: yesnoradio
+    show if: 
+      variable: has_inspection_complete
+      is: False
 ---
 id: no inspection kickout
 question: |
