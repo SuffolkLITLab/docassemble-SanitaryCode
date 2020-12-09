@@ -123,7 +123,7 @@ subquestion: |
 fields:
   - I have had inspection: has_inspection_complete
     datatype: yesnoradio
-  - I have booked and inspection: sanitary_code_template_intro
+  - I have booked an inspection: sanitary_code_template_intro
     datatype: yesnoradio
     show if: 
       variable: has_inspection_complete
