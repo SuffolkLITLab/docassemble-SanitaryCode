@@ -41,50 +41,57 @@ features:
 sections:
   - review_sanitary_code_template: Review your answers
 ---
+objects:
+  - users: PeopleList.using(ask_number=True, target_number=1)
+---
 id: interview_order_sanitary_code_template
 code: |
   # This is a placeholder to control logic flow in this interview
 
   basic_questions_intro_screen 
-  sanitary_code_template_intro
+  if not sanitary_code_template_intro:
+    kick_out
   # Set the allowed courts for this interview
   allowed_courts = interview_metadata["sanitary_code_template"]["allowed courts"]
   nav.set_section('review_sanitary_code_template')
   user_role = 'plaintiff'
-  other_parties[0].address.address
-  number_of_apartments
-  rent_amount
-  if not inspection_yesno:
-    future_inspection_yesno
-  order_yesno
-  set_progress(9.09)
-  fmv_yesno
-  reciever_yesno
-  # Set the answer file name.
-  set_parts(subtitle=str(users))
-  courts[0].address.county
-  str(courts[0])
-  set_progress(18.18)
   str(plaintiffs)
   str(other_parties)
   users[0].address.on_one_line()
   set_progress(27.27)
   users[0]
-  users[1]
+  #users[1]
   users[0].address.address
-  users[1].address.address
+  #users[1].address.address
   set_progress(36.36)
-  users[1].address.zip
+  #users[1].address.zip
   users[0].address.state
-  users[1].address.state
+  #users[1].address.state
   users[0].address.city
-  users[1].address.city
+  #users[1].address.city
   set_progress(45.45)
   users[0].address.zip
   users[0].phone_number
   users[0].email
-  users[1].phone_number
-  users[1].email
+  #users[1].phone_number
+  #users[1].email
+  other_parties[0].address.address
+  number_of_apartments
+  rent_amount
+  if not inspection_yesno:
+    future_inspection_yesno
+    if not future_inspection_yesno:
+      kick_out
+  petition_explained
+  fmv_yesno
+  reciever_yesno
+  order_yesno
+  set_progress(9.09)
+  # Set the answer file name.
+  set_parts(subtitle=str(users))
+  courts[0].address.county
+  str(courts[0])
+  set_progress(18.18)
   set_progress(54.55)
   signature_date
   # Save (anonymized) interview statistics.
@@ -92,17 +99,37 @@ code: |
   sanitary_code_template_preview_question # Pre-canned preview screen
   basic_questions_signature_flow
   users[0].signature
-  users[1].signature
+  #users[1].signature
   sanitary_code_template = True
+---
+code: |
+  interview_short_title = 'Petition the court to Enforce the State Sanitary Code'
 ---
 comment: |
   This question is used to introduce your interview. Please customize
 id: Petition to Enforce Sanitary Code
-continue button field: sanitary_code_template_intro
 question: |
-  Petition to Enforce Sanitary Code
+  Tenant Petition for the enforcement of the State Sanitary Code purusant to G.L c. 111 §127C-I
 subquestion: |
-  This is an interview to help a tenant fill out a petition to enforce sanitary code to get a landlord to make repairs in their apartments.
+  The primary purpose of this form is for tenants to be able to quickly go to court and ask that the court order the landlord to make repairs, especially emergency repairs.
+  
+  You can also use this petition to ask a judge to lower your rent to the *fair rental value* of your apartment or order you to pay this amount to the court while the landlord makes the repairs. In addition, a tenant can use this form to ask the court to appoint a *receiver*, or temporary landlord.
+  
+  **In order for this Petition to be successful you need to have had an inspection by a code enforcement agency already done OR have an inspection scheduled within 24 hours of the FILING of this Petition with the court**
+  
+  Have you met the inspection requirements necessary for this Petition to be successful?
+yesno: sanitary_code_template_intro
+---
+id: no inspection kickout
+question: |
+  You do not meet the requirements necessary to complete this form
+subquestion: |
+  In order to file the Petition properly you need to have an inspection report or an inspection scheduled at least 24 hours before the filing of this petition.
+
+  Contact your town offices to find out how to schedule an inspection.
+event: kick_out
+buttons:
+  - Exit: exit
 ---
 id: Review your form before you sign it
 continue button field: sanitary_code_template_preview_question
@@ -112,17 +139,25 @@ subquestion: |
   Here is a preview of the form you'll sign on the next page. 
   
    ${ pdf_concatenate(sanitary_code_template_attachment['preview'], filename='sanitary_code_template.pdf')}
-#---
-#id: defendant address
-#question: |
-#  What is the Defendant's address?
-#fields:
-#  - 'Defendant address': other_parties[0].address.address
-#    maxlength: 51
+---
+id: explaining the petition
+question: |
+  What this form will do
+subquestion: |
+  This form will automatically ask the court for:
+  
+  - An Order of Notice, which is a notice of the trial that you will schedule with the court to be served to your landlord.
+  
+  - An order to grant any relief that they deem to be just and proper, such as making repairs to the issues indicated on your inspection report.
+  
+  On the following screens you will be asked if there are any **other** orders or relief that you wish to ask from the court. 
+  
+  **If you are only asking that the court orders the landlord to make repairs then answer "No" to all of the following questions.**
+continue button field: petition_explained
 ---
 id: apartments number
 question: |
-  Enter the following information:
+  Enter the following information about ${ users[0].address.on_one_line() }:
 fields:
   - 'Number of apartments in the building': number_of_apartments
     datatype: number
@@ -139,13 +174,20 @@ fields:
     datatype: currency
     min: 0
   - 'Rate which you pay that amount': rent_rate
+    choices:
+      - Daily
+      - Weekly
+      - Bi-weekly
+      - Monthly
+      - Every 2 months
+      - Every 3 months
     maxlength: 19
 ---
 id: inspections
 question: |
   Inspections by an official from a code enforcement agency
 subquestion: |
-  Has an inspection already taken place? or will there be one in the future?
+  Has an inspection from an official code enforcement agency already taken place?
 fields:
   - 'Inspection already taken place?': inspection_yesno
     datatype: yesnoradio
@@ -156,10 +198,12 @@ fields:
 id: future inspections
 question: |
   Do you have any future inspections with an official from a code enforcement agency scheduled?
+subquestion: |
+  **In order to file the Petition properly you need to have an inspection report or an inspection scheduled at least 24 hours before the filing of this petition.**
 fields:
   - 'Future inspection?': future_inspection_yesno
     datatype: yesnoradio
-  - 'Future inspector name': future_inspector_name
+  - 'Name of the code enforcement agency': future_inspector_name
     show if: future_inspection_yesno
     maxlength: 36
   - 'Date of future inspection': future_inspection_date
@@ -168,15 +212,15 @@ fields:
 ---
 id: Order details
 question: |
-  Requesting an Order from the court
+  Requesting any additional orders or relief from the court
 subquestion: |
-  Are you requesting that the court issues a restraining order, injunction or other relief against the landlord?
+  Are you requesting that **along with the Order of Notice and order to make repairs** that the court issues a restraining order, injunction or other relief against the landlord?
 
   If so, what do you want the court to order the landlord to do?
 fields:
-  - 'Do you wish for the court to issue an order?': order_yesno
+  - 'Do you wish for the court to issue an additional order?': order_yesno
     datatype: yesnoradio
-  - 'What do you want the order to ask of the landlord?': order_description
+  - 'What do you want the court to order the landlord to do': order_description
     input type: area
     show if: order_yesno
     maxlength: 396
@@ -246,7 +290,7 @@ attachment:
       - "plaintiff2_address_city": ${ users[1].address.city }
       - "plaintiff1_address_zip": ${ users[0].address.zip }
       - "plaintiff2_phone": ${ users[1].phone_number }
-      - "plaintiff1_phone": ${ users[0].phone_number }
+      - "plaintiff1_phone": ${ users[0].phone_numbers() }
       - "plaintiff1_email": ${ users[0].email }
       - "plaintiff2_email": ${ users[1].email }
       - "signature_date": ${ signature_date }
