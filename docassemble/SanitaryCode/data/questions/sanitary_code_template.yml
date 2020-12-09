@@ -109,9 +109,9 @@ comment: |
   This question is used to introduce your interview. Please customize
 id: Petition to Enforce Sanitary Code
 question: |
-  Tenant Petition for the enforcement of the State Sanitary Code purusant to G.L c. 111 §127C-I
+  Tenant petition for the enforcement of the state sanitary code purusant to G.L c. 111 §127C-I
 subquestion: |
-  The primary purpose of this form is for tenants to be able to quickly go to court and ask that the court order the landlord to make repairs, especially emergency repairs.
+  The primary purpose of this form is to allow tenants to quickly go to court and ask that the court order the landlord to make repairs, especially emergency repairs.
   
   You can also use this petition to ask a judge to lower your rent to the *fair rental value* of your apartment or order you to pay this amount to the court while the landlord makes the repairs. In addition, a tenant can use this form to ask the court to appoint a *receiver*, or temporary landlord.
   
@@ -173,7 +173,7 @@ fields:
   - 'Amount that you pay in rent': rent_amount
     datatype: currency
     min: 0
-  - 'Rate which you pay that amount': rent_rate
+  - 'Rate at which you pay that amount': rent_rate
     choices:
       - Daily
       - Weekly
@@ -216,26 +216,27 @@ question: |
 subquestion: |
   Are you requesting that **along with the Order of Notice and order to make repairs** that the court issues a restraining order, injunction or other relief against the landlord?
 
-  If so, what do you want the court to order the landlord to do?
+  If so, what do you need the court to order the landlord to do?
 fields:
-  - 'Do you wish for the court to issue an additional order?': order_yesno
+  - 'Do you need for the court to issue an additional order?': order_yesno
     datatype: yesnoradio
-  - 'What do you want the court to order the landlord to do': order_description
+  - 'What do you need the court to order the landlord to do': order_description
     input type: area
     show if: order_yesno
     maxlength: 396
 ---
 id: FMV
 question: |
-  Fair Market Value Determination
+  Fair Market Value determination
 subquestion: |
-  You can ask the court to make a fair market value determination of the apartment without the proper repairs and you can ask the court to authroize the tenants to pay rent in the amount of that fair market value determination. 
+  You can ask the court to make a fair market value determination of the apartment without the proper repairs and you can ask the court to authorizes the tenants to pay rent in the amount of that fair market value determination. 
   
   Do you wish for the court to make an FMV and to authorize payment in that amount?
 fields:
   - 'Ask the court to make an FMV determination': fmv_yesno
     datatype: yesnoradio
   - 'Ask the court to authorize the rent payment in that FMV value': fmv_authorization_yesno
+    show if: fmv_yesno
     datatype: yesnoradio
 ---
 id: receiver yesno
