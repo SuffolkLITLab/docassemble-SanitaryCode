@@ -168,12 +168,12 @@ id: rent
 question: |
   Rent
 subquestion: |
-  Enter the amount of rent you pay and the rate at which you pay that rent (i.e. per week, per month, etc.)
+  Tell the judge how much rent you pay and how often you pay that rent (for example weekly or monthly).
 fields:
-  - 'Amount that you pay in rent': rent_amount
+  - 'Amount of rent you pay': rent_amount
     datatype: currency
     min: 0
-  - 'Rate at which you pay that amount': rent_rate
+  - 'How often you pay rent': rent_rate
     choices:
       - Daily
       - Weekly
