@@ -157,7 +157,7 @@ continue button field: petition_explained
 ---
 id: apartments number
 question: |
-  Enter the following information about ${ users[0].address.on_one_line() }:
+  Tell the judge about ${ users[0].address.on_one_line() }:
 fields:
   - 'Number of apartments in the building': number_of_apartments
     datatype: number
