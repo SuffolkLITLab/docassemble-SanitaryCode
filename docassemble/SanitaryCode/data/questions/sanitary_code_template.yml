@@ -227,15 +227,15 @@ fields:
 ---
 id: FMV
 question: |
-  Fair Market Value determination
+  Fair Market Value calculation
 subquestion: |
-  You can ask the court to make a fair market value determination of the apartment without the proper repairs and you can ask the court to authorizes the tenants to pay rent in the amount of that fair market value determination. 
+  You can ask the judge to calculate what the fair market value is to rent your apartment without the proper repairs and you can ask the judge to allow you to pay that amount as rent. 
   
-  Do you wish for the court to make an FMV and to authorize payment in that amount?
+  Do you want to ask the judge to do this calculation and to allow you to pay that new amount?
 fields:
-  - 'Ask the court to make an FMV determination': fmv_yesno
+  - 'Ask the judge to do the calculation': fmv_yesno
     datatype: yesnoradio
-  - 'Ask the court to authorize the rent payment in that FMV value': fmv_authorization_yesno
+  - 'Ask the judge to allow the rent to be that new amount': fmv_authorization_yesno
     show if: fmv_yesno
     datatype: yesnoradio
 ---
