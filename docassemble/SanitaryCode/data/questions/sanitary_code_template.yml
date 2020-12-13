@@ -241,9 +241,9 @@ fields:
 ---
 id: receiver yesno
 question: |
-  Are you requesting that the court appoints a reciever?
+  Do you want to ask the judge to choose a receiver?
 subquestion: |
-  A reciever will be a temporary landlord that would be appointed by the court and authorized to make the proper repairs. When the repairs are done the reciever will no longer have that responsibility. 
+  A reciever will be a temporary landlord that would be appointed by the court and allowed to make the proper repairs. When the repairs are done, the reciever will no longer be the temporary landlord. 
 yesno: reciever_yesno
 ---
 progress: 100
