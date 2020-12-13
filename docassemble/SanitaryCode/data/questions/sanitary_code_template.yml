@@ -142,17 +142,17 @@ subquestion: |
 ---
 id: explaining the petition
 question: |
-  What this form will do
+  What this form does
 subquestion: |
-  This form will automatically ask the court for:
+  This form will automatically ask the judge for:
   
-  - An Order of Notice, which is a notice of the trial that you will schedule with the court to be served to your landlord.
+  - Confirmation that there will be a trial (this will be delivered to your landlord to let them know when the trial will be).
   
-  - An order to grant any relief that they deem to be just and proper, such as making repairs to the issues indicated on your inspection report.
+  - An order for any remedy that the judge thinks is suitable, such as making repairs to the issues included on your inspection report.
   
-  On the following screens you will be asked if there are any **other** orders or relief that you wish to ask from the court. 
+  On the next screens you will be asked if there are any **other** remedies that you wish to ask the judge for. 
   
-  **If you are only asking that the court orders the landlord to make repairs then answer "No" to all of the following questions.**
+  **If you are only asking  the judge to get your landlord to make repairs,  answer "No" to all of the next questions.**
 continue button field: petition_explained
 ---
 id: apartments number
