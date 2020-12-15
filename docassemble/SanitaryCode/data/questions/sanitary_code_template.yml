@@ -49,7 +49,8 @@ code: |
   # This is a placeholder to control logic flow in this interview
 
   basic_questions_intro_screen 
-  if not sanitary_code_template_intro:
+  sanitary_code_template_intro
+  if not inspection:
     kick_out
   # Set the allowed courts for this interview
   allowed_courts = interview_metadata["sanitary_code_template"]["allowed courts"]
@@ -108,17 +109,68 @@ code: |
 comment: |
   This question is used to introduce your interview. Please customize
 id: Petition to Enforce Sanitary Code
+field: sanitary_code_template_intro
 question: |
-  Tenant petition for the enforcement of the state sanitary code purusant to G.L c. 111 §127C-I
+  Tenant Petition for the Enforcement of the State Sanitary Code Pursuant to G.L c. 111 §127C-I
 subquestion: |
-  The primary purpose of this form is to allow tenants to quickly go to court and ask that the court order the landlord to make repairs, especially emergency repairs.
+  Tenants use this petition to ask a judge to:
   
-  You can also use this petition to ask a judge to lower your rent to the *fair rental value* of your apartment or order you to pay this amount to the court while the landlord makes the repairs. In addition, a tenant can use this form to ask the court to appoint a *receiver*, or temporary landlord.
+  * order the landlord to make repairs. It is especially useful when you have emergency repairs that need to be fixed quickly.
+  * lower your rent to the {fair rental value} of your apartment,  
+  * order you to pay the {fair rental value} **to the court** while the landlord makes the repairs, or
+  * appoint a {receiver}, or temporary landlord.</br>
+  If you are going to ask the judge for a temporary landlord, try to [get help from a lawyer](https://MassLegalHelp.org/find-legal-aid).
   
-  **In order for this Petition to be successful you need to have had an inspection by a code enforcement agency already done OR have an inspection scheduled within 24 hours of the FILING of this Petition with the court**
+  ####Important
+terms:
+ - receiver: |
+    A receiver is a person or organization the court appoints to manage a property temporarily because the landlord is irresponsible or impossible to reach. </br></br>
+    
+    The receiver  enforces the state Sanitary Code. </br></br>
+    
+    Tenants can use receivership as way to get necessary repairs made and prevent their building from deteriorating.</br></br>
+    
+    See [Receiverships](https://www.masslegalhelp.org/housing/lt1-chapter-8-receivership).
+ - fair rental value: |
+     The fair rental value is the value of the apartment with all of its problems.
+---
+id: filing requirement
+question: |
+  Important
+subquestion: |
+  **Before** you file this petition with the court you need:
   
-  Have you met the inspection requirements necessary for this Petition to be successful?
-yesno: sanitary_code_template_intro
+  * an inspection by a code enforcement agency,  **or**
+  * an appointment for an inspection within 24 hours of the day you file your petition.
+  
+  Has a code enforcement agency already inspected your apartment?
+fields:
+  - no label: inspected_already
+    datatype: yesnoradio
+  - 'Have you scheduled an appointment with a code enforcement agency?':  inspection_scheduled
+    datatype: yesnoradio
+    js show if: |
+      val('inspected_already') == false
+  - 'Is the appointment within 24 hours of when you plan to file this petition?': inspection_within_24_hours
+    datatype: yesnoradio
+    show if: 
+      variable: inspection_scheduled
+      is: True
+help: 
+  label: What is a code enforcement agency?
+  heading: |
+   A code enforcement agency is:
+  content: |
+    What **is** a code enforcement agency?! look it up and explain here. link to how to find one.
+---
+code: |    
+  if not inspected_already:
+    if inspection_scheduled:
+      inspection = inspection_within_24_hours
+    else:
+      inspection = False
+  else:
+    inspection = True
 ---
 id: no inspection kickout
 question: |
