@@ -44,6 +44,9 @@ sections:
 objects:
   - users: PeopleList.using(ask_number=True, target_number=1)
 ---
+code: |
+  other_parties.there_are_any = True
+---
 id: interview_order_sanitary_code_template
 code: |
   # This is a placeholder to control logic flow in this interview
@@ -52,6 +55,11 @@ code: |
   sanitary_code_template_intro
   if not inspection:
     kick_out
+  if inspected_already:
+    inspector_name
+  if inspection_scheduled:
+    future_inspector_name
+  reassurance_screen
   # Set the allowed courts for this interview
   allowed_courts = interview_metadata["sanitary_code_template"]["allowed courts"]
   nav.set_section('review_sanitary_code_template')
@@ -79,10 +87,6 @@ code: |
   other_parties[0].address.address
   number_of_apartments
   rent_amount
-  if not inspection_yesno:
-    future_inspection_yesno
-    if not future_inspection_yesno:
-      kick_out
   petition_explained
   fmv_yesno
   reciever_yesno
@@ -136,7 +140,7 @@ terms:
 ---
 id: filing requirement
 question: |
-  Important
+  Important Requirements
 subquestion: |
   **Before** you file this petition with the court you need:
   
@@ -161,7 +165,14 @@ help:
   heading: |
    A code enforcement agency is:
   content: |
-    What **is** a code enforcement agency?! look it up and explain here. link to how to find one.
+   Your town or city Board of Health or Inspectional Services Department does the inspection. Contact your city or towns Board of Health to learn how to make a an appointment. 
+---
+id: reassurance screen
+question: | 
+  It looks like you have met the requirements!
+subquestion: |
+  On the following screens please enter information about yourself, your landlord and your apartment. 
+continue button field: reassurance_screen
 ---
 code: |    
   if not inspected_already:
@@ -213,19 +224,20 @@ question: |
 fields:
   - 'Number of apartments in the building': number_of_apartments
     datatype: number
+    min: 0
   - 'Number of those apartments which are occupied': occupied_apartments
     datatype: number
+    min: 0
+#    max: 
 ---
 id: rent
 question: |
   Rent
-subquestion: |
-  Tell the judge how much rent you pay and how often you pay that rent (for example weekly or monthly).
 fields:
-  - 'Amount of rent you pay': rent_amount
+  - 'How much rent do you pay?': rent_amount
     datatype: currency
     min: 0
-  - 'How often you pay rent': rent_rate
+  - 'How often you pay rent?': rent_rate
     choices:
       - Daily
       - Weekly
@@ -239,36 +251,31 @@ id: inspections
 question: |
   Inspections by an official from a code enforcement agency
 subquestion: |
-  Has an inspection from an official code enforcement agency already taken place?
+  State the name of the code enforcement agency which did an insection of your residence.
 fields:
-  - 'Inspection already taken place?': inspection_yesno
-    datatype: yesnoradio
   - 'Name of the code enforcement agency ': inspector_name
-    show if: inspection_yesno
     maxlength: 43
 ---
 id: future inspections
 question: |
-  Do you have any future inspections with an official from a code enforcement agency scheduled?
+  Future Inspection
 subquestion: |
   **In order to file the Petition properly you need to have an inspection report or an inspection scheduled at least 24 hours before the filing of this petition.**
 fields:
-  - 'Future inspection?': future_inspection_yesno
-    datatype: yesnoradio
   - 'Name of the code enforcement agency': future_inspector_name
-    show if: future_inspection_yesno
     maxlength: 36
   - 'Date of future inspection': future_inspection_date
-    show if: future_inspection_yesno
     datatype: date
 ---
 id: Order details
 question: |
   Do you want to ask the judge for anything else?
 subquestion: |
- As well as the **Order of Notice** and **order to make repairs**, you can ask the judge to give you a restraining order, injunction or other remedy against your landlord
+ As well as the **Order of Notice** and **order to make repairs**, you can ask the judge to give you a {restraining order}, {injunction} or other remedy against your landlord
 
   What do you need the judge to make your landlord to do?
+  
+  **If you are seeking a restraining order or injunction say so in your statement**
 fields:
   - 'Do you need for the judge to give you something else?': order_yesno
     datatype: yesnoradio
@@ -276,6 +283,11 @@ fields:
     input type: area
     show if: order_yesno
     maxlength: 396
+terms:
+  - restraining order: |
+      A restraining order or protective order is an order used by a court to protect a person, object, business, company, state, country, establishment, or entity from another person who has been violent or abusive to another.
+  - injunction: |
+      An injunction asks the court to prevent someone from doing something, in your case it may be asking the court to stop an eviction process from the landlord. 
 ---
 id: FMV
 question: |
@@ -352,9 +364,9 @@ attachment:
       - "occupied_apartments": ${ occupied_apartments }
       - "rent_amount": ${ currency(rent_amount ) }
       - "rent_rate": ${ rent_rate }
+      - "inspected_already": ${ inspected_already }
+      - "inspection_scheduled": ${ inspection_scheduled }
       - "inspector_name": ${ inspector_name }
-      - "inspection_yesno": ${ inspection_yesno }
-      - "future_inspection_yesno": ${ future_inspection_yesno }
       - "future_inspector_name": ${ future_inspector_name }
       - "future_inspection_date": ${ future_inspection_date }
       - "order_yesno": ${ order_yesno }
@@ -394,14 +406,6 @@ review:
     button: |
       Inspector name:
       ${ inspector_name }
-  - Edit: inspection_yesno
-    button: |
-      Inspection yesno:
-      ${ word(yesno(inspection_yesno)) }
-  - Edit: future_inspection_yesno
-    button: |
-      Future inspection yesno:
-      ${ word(yesno(future_inspection_yesno)) }
   - Edit: future_inspector_name
     button: |
       Future inspector name:
