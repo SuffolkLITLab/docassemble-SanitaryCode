@@ -28,7 +28,7 @@ This product will be used by tenants in situations where they have a landlord th
 
 # Research 
 
-Currently, the only product that is avaiable is a downloadable PDF that allows the tenant to fill out this information by hand and provides insturctions on the next step. This product is useful but it lacks a lot of information specifically on which each section does what and why some of the information is necessary, or why the questions are being asked. This document was created by Mass Legal Help and is the basis for the final product that the document will serve. 
+Currently, the only product that is avaiable is a downloadable PDF that allows the tenant to fill out this information by hand and provides insturctions on the next step. This product is useful but it lacks a lot of information specifically on which each section does what and why some of the information is necessary, or why the questions are being asked. This document was created by Mass Legal Help and is the basis for the final product that the document will serve. You can find the original version of the document [here](https://www.masslegalhelp.org/housing/lt1-form-14-tenant-petition.pdf)
 
 This document asks for simple information about the tenant and landlord including name and address, this information will be easy to collect using the AssemblyLine Basic Questions. The main purpose of this petition is to ask the court to force the landlord to make repairs, therefore any user completeing this form will automatically be asking the court to do this and to issue the user an order of notice for the tenant to give to the landlord. The repairs that are being made must be cited by an official inspection report, therefore one must be done as a requirement before filing this peition, the interview will make sure that the user has an inspection done prior to the filing of the form. This is vital because a court is more likely to recognize evidence of the problems if there is an inspection report and also the inspection report is the document that will outline the issues the tenant is pointing out and will be referred to as Exhibit A. This is vitally important.
 
@@ -91,3 +91,6 @@ This court form also needs accessiblilty for more than one tenant to be added to
 
 Other than that I believe that this is ready to go and is usable to a basic MVP level. The proceeding is not too complex so long as it is accompanied by the relevant inepction report that details the damage that the tenant is complaining about. 
 
+## Video demonstration
+
+View a demonstration of this project [Here](https://youtu.be/GH01BMXqV-Q)
