@@ -57,15 +57,13 @@ code: |
     kick_out
   if inspected_already:
     inspector_name
-  if inspection_scheduled:
+  if not inspected_already:
     future_inspector_name
-  reassurance_screen
   # Set the allowed courts for this interview
   allowed_courts = interview_metadata["sanitary_code_template"]["allowed courts"]
   nav.set_section('review_sanitary_code_template')
   user_role = 'plaintiff'
   str(plaintiffs)
-  str(other_parties)
   users[0].address.on_one_line()
   set_progress(27.27)
   users[0]
@@ -84,6 +82,7 @@ code: |
   users[0].email
   #users[1].phone_number
   #users[1].email
+  str(other_parties)
   other_parties[0].address.address
   number_of_apartments
   rent_amount
@@ -124,8 +123,6 @@ subquestion: |
   * order you to pay the {fair rental value} **to the court** while the landlord makes the repairs, or
   * appoint a {receiver}, or temporary landlord.</br>
   If you are going to ask the judge for a temporary landlord, try to [get help from a lawyer](https://MassLegalHelp.org/find-legal-aid).
-  
-  ####Important
 terms:
  - receiver: |
     A receiver is a person or organization the court appoints to manage a property temporarily because the landlord is irresponsible or impossible to reach. </br></br>
@@ -145,7 +142,7 @@ subquestion: |
   **Before** you file this petition with the court you need:
   
   * an inspection by a code enforcement agency,  **or**
-  * an appointment for an inspection within 24 hours of the day you file your petition.
+  * an appointment for an inspection before 24 hours of the day you file your petition.
   
   Has a code enforcement agency already inspected your apartment?
 fields:
@@ -155,7 +152,7 @@ fields:
     datatype: yesnoradio
     js show if: |
       val('inspected_already') == false
-  - 'Is the appointment within 24 hours of when you plan to file this petition?': inspection_within_24_hours
+  - 'Is the appointment scheduled to take place at least 24 hours before when you plan to file this petition?': inspection_within_24_hours
     datatype: yesnoradio
     show if: 
       variable: inspection_scheduled
@@ -169,7 +166,7 @@ help:
 ---
 id: reassurance screen
 question: | 
-  It looks like you have met the requirements!
+  You meet the requirements
 subquestion: |
   On the following screens please enter information about yourself, your landlord and your apartment. 
 continue button field: reassurance_screen
@@ -207,15 +204,15 @@ id: explaining the petition
 question: |
   What this form does
 subquestion: |
-  This form will automatically ask the judge for:
+  This form will automatically ask the court for:
   
   - Confirmation that there will be a trial (this will be delivered to your landlord to let them know when the trial will be).
   
   - An order for any remedy that the judge thinks is suitable, such as making repairs to the issues included on your inspection report.
   
-  On the next screens you will be asked if there are any **other** remedies that you wish to ask the judge for. 
+  On the next screens you will be asked if there are any **other** remedies that you wish to ask the court for such as a fair market value evaluation or a court appointed reciever.
   
-  **If you are only asking  the judge to get your landlord to make repairs,  answer "No" to all of the next questions.**
+  **If you are only asking  the court to get your landlord to make repairs,  answer "No" to all of the next questions.**
 continue button field: petition_explained
 ---
 id: apartments number
@@ -223,12 +220,14 @@ question: |
   Tell the judge about ${ users[0].address.on_one_line() }:
 fields:
   - 'Number of apartments in the building': number_of_apartments
-    datatype: number
+    datatype: integer
     min: 0
   - 'Number of those apartments which are occupied': occupied_apartments
-    datatype: number
+    datatype: integer
     min: 0
-#    max: 
+validation code: |
+  if occupied_apartments > number_of_apartments:
+    validation_error("Enter a number less than the total number of apartments.", field='occupied_apartments')
 ---
 id: rent
 question: |
@@ -239,12 +238,12 @@ fields:
     min: 0
   - 'How often you pay rent?': rent_rate
     choices:
-      - Daily
-      - Weekly
-      - Every two weeks
-      - Monthly
-      - Every 2 months
-      - Every 3 months
+      - Daily: day
+      - Weekly: week
+      - Every two weeks: every two weeks
+      - Monthly: month
+      - Every 2 months: every 2 months
+      - Every 3 months: every 3 months
     maxlength: 19
 ---
 id: inspections
@@ -271,15 +270,12 @@ id: Order details
 question: |
   Do you want to ask the judge for anything else?
 subquestion: |
- As well as the **Order of Notice** and **order to make repairs**, you can ask the judge to give you a {restraining order}, {injunction} or other remedy against your landlord
+ Along with the **Order of Notice** and **order to make repairs** that you are already recieving from this petition, you can also ask the ccourt to give you a {restraining order}, {injunction} or other relief from your landlord.
 
-  What do you need the judge to make your landlord to do?
-  
-  **If you are seeking a restraining order or injunction say so in your statement**
 fields:
-  - 'Do you need for the judge to give you something else?': order_yesno
+  - 'Do you need for the court to order something else?': order_yesno
     datatype: yesnoradio
-  - 'What do you need the judge to make your landlord do': order_description
+  - 'What do you need the court to order?': order_description
     input type: area
     show if: order_yesno
     maxlength: 396
@@ -293,21 +289,22 @@ id: FMV
 question: |
   Fair Market Value calculation
 subquestion: |
-  You can ask the judge to calculate what the fair market value is to rent your apartment without the proper repairs and you can ask the judge to allow you to pay that amount as rent. 
-  
-  Do you want to ask the judge to do this calculation and to allow you to pay that new amount?
+  You can ask the court to calculate the fair market value of your apartment in its current condition and you can ask the court to allow you to pay that amount as rent until the repairs are make. 
+
 fields:
-  - 'Ask the judge to do the calculation': fmv_yesno
+  - 'Ask the court to do the fair market value calculation': fmv_yesno
     datatype: yesnoradio
-  - 'Ask the judge to allow the rent to be that new amount': fmv_authorization_yesno
+  - 'Ask the court to allow the rent to be that new amount': fmv_authorization_yesno
     show if: fmv_yesno
     datatype: yesnoradio
 ---
 id: receiver yesno
 question: |
-  Do you want to ask the judge to choose a receiver?
+  Do you need the court to appoint a receiver?
 subquestion: |
   A reciever will be a temporary landlord that would be appointed by the court and allowed to make the proper repairs. When the repairs are done, the reciever will no longer be the temporary landlord. 
+  
+  **If you are asking the court to appoint a reciever it is strongly advised that you seek out legal representation**
 yesno: reciever_yesno
 ---
 progress: 100
