@@ -71,6 +71,8 @@ Testing was done by 2 volunteers who provided feed back similar to what was aske
 2. In the rent section the language was changed to fit better to the language on the pdf document so instead of saying  monthly or daily it now says per day or per month.
 3. This was a page made in consultation with Caroline during her suggested edits. We bleive it is important to tell them what they are already getting from the interview and allow them to ask for further edits. 
 
+A link to the testing scenarios google sheet can be found [Here](https://docs.google.com/spreadsheets/d/1It5dTveXSbWouF2F1Fo68ixqr6wgcQQczGgQy8JLpT0/edit?usp=sharing)
+
 In addition to the recorded user testing there are updates from former pushes by both Maeve and Caroline. 
 
 # What this Product Improves
