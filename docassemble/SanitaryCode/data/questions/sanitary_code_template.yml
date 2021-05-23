@@ -1,18 +1,10 @@
 #This is an interview which can help a tenant complete a petition to enforce sanitary code which asks a court to force a landlord to make repairs to the tenants apartment/residence which does not meet the state enforced sanitary code. This is for the state of Massachusetts
 ---
 include:
-  - docassemble.MAVirtualCourt:basic-questions.yml
+  - docassemble.AssemblyLine:al_package.yml
+  - docassemble.MassAccess:massaccess.yml
 ---
 comment: |
-  The metadata section controls the tab title and saved interview title. You can delete this section if you include this YAML file in another YAML file.
-metadata:
-  title: |
-    Petition to Enforce Sanitary Code
-  short title: |
-    Sanitary code
----
-comment: |
-  This section is used by MAVirtualCourts to control how some of the questions work.
 mandatory: True
 code: |
   interview_metadata # make sure we initialize the object
@@ -42,17 +34,14 @@ sections:
   - review_sanitary_code_template: Review your answers
 ---
 objects:
-  - users: PeopleList.using(ask_number=True, target_number=1)
----
-code: |
-  other_parties.there_are_any = True
+  - users: ALPeopleList.using(ask_number=True, target_number=1)
+  - other_parties: ALPeopleList.using(there_are_any=True)
 ---
 id: interview_order_sanitary_code_template
 code: |
-  # This is a placeholder to control logic flow in this interview
-
-  basic_questions_intro_screen 
-  sanitary_code_template_intro
+  user_started_case = True # set this here in case this is included in a responsive pleading
+  al_form_type = 'starts_case'
+  # This is a placeholder to control logic flow in this interview 
   if not inspection:
     kick_out
   if inspected_already:
@@ -93,28 +82,26 @@ code: |
   set_progress(9.09)
   # Set the answer file name.
   set_parts(subtitle=str(users))
-  courts[0].address.county
-  str(courts[0])
-  set_progress(18.18)
+  trial_court
   set_progress(54.55)
-  signature_date
+  # signature_date
   # Save (anonymized) interview statistics.
-  store_variables_snapshot(data={'zip': users[0].address.zip})
-  sanitary_code_template_preview_question # Pre-canned preview screen
-  basic_questions_signature_flow
-  users[0].signature
+  # store_variables_snapshot(data={'zip': users[0].address.zip})
   #users[1].signature
   sanitary_code_template = True
+---
+code: |
+  user_started_case = True
+  al_form_type = 'starts_case'
 ---
 code: |
   interview_short_title = 'Petition the court to Enforce the State Sanitary Code'
 ---
 comment: |
-  This question is used to introduce your interview. Please customize
 id: Petition to Enforce Sanitary Code
 field: sanitary_code_template_intro
 question: |
-  Tenant Petition for the Enforcement of the State Sanitary Code Pursuant to G.L c. 111 §127C-I
+  Tenant Petition for the Enforcement of the State Sanitary Code
 subquestion: |
   Tenants use this petition to ask a judge to:
   
@@ -134,6 +121,16 @@ terms:
     See [Receiverships](https://www.masslegalhelp.org/housing/lt1-chapter-8-receivership).
  - fair rental value: |
      The fair rental value is the value of the apartment with all of its problems.
+help:
+  label: |
+    What is a petition to enforce the sanitary code?
+  content: |
+    If you called a city inspector and they ordered your landlord to make
+    repairs, you can use this form to ask the court to enforce the city's
+    order.
+    
+    The law that supports this is [M.G.L c. 111 
+    §127C-I](https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXVI/Chapter111/Section127C)
 ---
 id: filing requirement
 question: |
@@ -160,9 +157,9 @@ fields:
 help: 
   label: What is a code enforcement agency?
   heading: |
-   A code enforcement agency is:
+    A code enforcement agency is:
   content: |
-   Your town or city Board of Health or Inspectional Services Department does the inspection. Contact your city or towns Board of Health to learn how to make a an appointment. 
+    Your town or city Board of Health or Inspectional Services Department does the inspection. Contact your city or town's Board of Health to learn how to make a an appointment. 
 ---
 id: reassurance screen
 question: | 
@@ -170,6 +167,43 @@ question: |
 subquestion: |
   On the following screens please enter information about yourself, your landlord and your apartment. 
 continue button field: reassurance_screen
+---
+sets:
+  - other_parties[0].name.first
+id: names of opposing parties
+question: |
+  What is your landlord's name?
+fields:
+  - code: |
+      other_parties[0].name_fields(person_or_business='unsure')
+help:
+  label: |
+    What name do I write?
+  content: |
+    You may not be sure who your landlord is. Write the name of the person
+    who owns your building.
+    
+    This may be the same as the name you write on your rent check.
+---
+id: any other opposing parties
+question: |
+  Is there anyone else who you want the order to include?
+subquestion: |
+  In some cases, you may have more than one landlord. Or there may be
+  someone else who is responsible for fixing your home that you need
+  to list in the judge's order.
+  
+  Most people answer "no" here.
+yesno: other_parties.there_is_another  
+---
+sets:
+  - other_parties[i].name.first
+id: names of opposing parties
+question: |
+  What is the name of the ${ ordinal(i) } person you want to name in the order?
+fields:
+  - code: |
+      other_parties[i].name_fields(person_or_business='unsure')
 ---
 code: |    
   if not inspected_already:
@@ -219,12 +253,13 @@ id: apartments number
 question: |
   Tell the judge about ${ users[0].address.on_one_line() }:
 fields:
-  - 'Number of apartments in the building': number_of_apartments
+  - 'Number of apartments in your building': number_of_apartments
     datatype: integer
     min: 0
-  - 'Number of those apartments which are occupied': occupied_apartments
+  - 'Number of apartments that you live in': occupied_apartments
     datatype: integer
     min: 0
+    default: 1
 validation code: |
   if occupied_apartments > number_of_apartments:
     validation_error("Enter a number less than the total number of apartments.", field='occupied_apartments')
@@ -270,7 +305,7 @@ id: Order details
 question: |
   Do you want to ask the judge for anything else?
 subquestion: |
- Along with the **Order of Notice** and **order to make repairs** that you are already recieving from this petition, you can also ask the ccourt to give you a {restraining order}, {injunction} or other relief from your landlord.
+ Along with the **Order of Notice** and **order to make repairs** that you are already recieving from this petition, you can also ask the judge to give you a {restraining order}, {injunction} or other relief from your landlord.
 
 fields:
   - 'Do you need for the court to order something else?': order_yesno
@@ -306,20 +341,7 @@ subquestion: |
   
   **If you are asking the court to appoint a reciever it is strongly advised that you seek out legal representation**
 yesno: reciever_yesno
----
-progress: 100
-mandatory: True
-id: Your form is ready to download and file
-question: |
-  Your form is ready to download and file
-subquestion: |
-  Thank you ${users}. Your form is ready to download and deliver.
-  
-  Below is a preview of your form.
-  
-  ${pdf_concatenate(sanitary_code_template_attachment['final'], filename='sanitary_code_template.pdf') }
-need: sanitary_code_template
-attachment code: sanitary_code_template_attachment['final']
+
 ---
 objects:
   - sanitary_code_template_attachment: DADict
@@ -331,8 +353,8 @@ attachment:
     skip undefined: True
     pdf template file: sanitary_code_template.pdf
     fields: 
-      - "court_county": ${ courts[0].address.county }
-      - "court_name": ${ str(courts[0]) }
+      - "court_county": ${ trial_court.address.county }
+      - "court_name": ${ trial_court }
       - "docket_number": ${ docket_numbers }
       - "plaintiffs": ${ str(plaintiffs) }
       - "defendants": ${ str(other_parties) }
@@ -431,14 +453,10 @@ review:
     button: |
       Reciever yesno:
       ${ word(yesno(reciever_yesno)) }
-  - Edit: courts[0].address.county
+  - Edit: trial_court
     button: |
-      courts[0].address.county:
-      ${ courts[0].address.county }
-  - Edit: courts[0]
-    button: |
-      courts[0]:
-      ${ courts[0] }
+      Court:
+      ${ trial_court }
   - Edit: docket_numbers
     button: |
       docket_numbers:
@@ -463,9 +481,9 @@ review:
     button: |
       users[0].signature:
       ${ users[0].signature }
-  - Edit: users[0]
+  - Edit: users[0].name.first
     button: |
-      users[0]:
+      Your name:
       ${ users[0] }
   - Edit: users[1]
     button: |
