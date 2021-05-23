@@ -15,6 +15,10 @@ metadata:
     - Quinten Steenhuis
 ---
 code: |
+  sanitary_code_template_attachment.enabled = True
+  sanitary_code_instructions_attachment.enabled = True
+---
+code: |
   package_name = "docassemble.SanitaryCode"
 ---
 mandatory: True
@@ -27,15 +31,35 @@ code: |
   users[0].signature
   download_sanitary_code_template
 ---
+id: Review your form before you sign it
+continue button field: sanitary_code_template_preview_question
+question: |
+  Review your form before you sign it
+subquestion: |
+  Here is a preview of the form you'll sign on the next page. 
+  
+   ${ al_court_bundle.as_pdf(key='preview') }
+---
 progress: 100
 event: download_sanitary_code_template
 id: Your form is ready to download and file
 question: |
   Your form is ready to download and file
 subquestion: |
-  Thank you ${users}. Your form is ready to download and deliver.
+  Thank you ${users}. Your form is ready.
   
-  Below is a preview of your form.
+  You still need to:
   
-  ${pdf_concatenate(sanitary_code_template_attachment['final'], filename='sanitary_code_template.pdf') }
-attachment code: sanitary_code_template_attachment['final']    
+  1. Print 3 copies of this document.
+  1. Deliver a copy to the ${ trial_court }, at ${ trial_court.address.on_one_line() }.
+  1. Deliver a copy to ${ other_parties } or their attorney.
+  1. Keep one copy for your records.
+  
+  ${ al_user_bundle.download_list_html() }
+  
+  ${ al_user_bundle.send_button_html() }
+---
+objects:
+  - al_user_bundle: ALDocumentBundle.using(elements=[sanitary_code_instructions_attachment, sanitary_code_template_attachment], title="Forms to file today", filename="petition_to_enforce_sanitary_code")
+  - al_court_bundle: ALDocumentBundle.using(elements=[ sanitary_code_template_attachment], title="Forms to file today", filename="petition_to_enforce_sanitary_code")
+  

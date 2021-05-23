@@ -110,6 +110,9 @@ subquestion: |
   * order you to pay the {fair rental value} **to the court** while the landlord makes the repairs, or
   * appoint a {receiver}, or temporary landlord.</br>
   If you are going to ask the judge for a temporary landlord, try to [get help from a lawyer](https://MassLegalHelp.org/find-legal-aid).
+  
+  The law that allows this petition is [M.G.L c. 111 
+  §127C-I](https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXVI/Chapter111/Section127C).
 terms:
  - receiver: |
     A receiver is a person or organization the court appoints to manage a property temporarily because the landlord is irresponsible or impossible to reach. </br></br>
@@ -121,16 +124,6 @@ terms:
     See [Receiverships](https://www.masslegalhelp.org/housing/lt1-chapter-8-receivership).
  - fair rental value: |
      The fair rental value is the value of the apartment with all of its problems.
-help:
-  label: |
-    What is a petition to enforce the sanitary code?
-  content: |
-    If you called a city inspector and they ordered your landlord to make
-    repairs, you can use this form to ask the court to enforce the city's
-    order.
-    
-    The law that supports this is [M.G.L c. 111 
-    §127C-I](https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXVI/Chapter111/Section127C)
 ---
 id: filing requirement
 question: |
@@ -224,15 +217,6 @@ subquestion: |
 event: kick_out
 buttons:
   - Exit: exit
----
-id: Review your form before you sign it
-continue button field: sanitary_code_template_preview_question
-question: |
-  Review your form before you sign it
-subquestion: |
-  Here is a preview of the form you'll sign on the next page. 
-  
-   ${ pdf_concatenate(sanitary_code_template_attachment['preview'], filename='sanitary_code_template.pdf')}
 ---
 id: explaining the petition
 question: |
@@ -344,7 +328,11 @@ yesno: reciever_yesno
 
 ---
 objects:
-  - sanitary_code_template_attachment: DADict
+  - sanitary_code_template_attachment: ALDocument.using(title="Petition to Enforce Sanitary Code", has_addendum=False, filename="petition_to_enforce_sanitary_code")
+  - sanitary_code_instructions_attachment: ALDocument.using(title="Instructions", filename="instructions", has_addendum=False)
+---
+objects:
+  - sanitary_code_instructions_attachment[i]: DAStaticFile.using(filename="next_steps_petition_to_enforce_sanitary_code.pdf")
 ---
 attachment:
     variable name: sanitary_code_template_attachment[i]
@@ -356,13 +344,12 @@ attachment:
       - "court_county": ${ trial_court.address.county }
       - "court_name": ${ trial_court }
       - "docket_number": ${ docket_numbers }
-      - "plaintiffs": ${ str(plaintiffs) }
-      - "defendants": ${ str(other_parties) }
+      - "plaintiffs": ${ plaintiffs }
+      - "defendants": ${ other_parties }
       - "plaintiff_address_on_one_line": ${ users[0].address.on_one_line() }
       # If it is a signature, test which file version we're expecting. leave it empty unless it's the final attachment version
-      - "plaintiff2_signature": ${ users[1].signature if i == 'final' else '' }
-      # If it is a signature, test which file version we're expecting. leave it empty unless it's the final attachment version
-      - "plaintiff1_signature": ${ users[0].signature if i == 'final' else '' }
+      - "plaintiff2_signature": ${ users[1].signature_if_final(i) }
+      - "plaintiff1_signature": ${ users[0].signature_if_final(i) }
       - "plaintiff1": ${ users[0] }
       - "plaintiff2": ${ users[1] }
       - "plaintiff1_address_street": ${ users[0].address.address }
@@ -401,9 +388,9 @@ question: |
 subquestion: |
   Edit your answers below
 review: 
-  - Edit: other_parties[0].address
+  - Edit: other_parties[0].address.address
     button: |
-      Defendant address:
+      Landlord's address:
       ${ other_parties[0].address }
   - Edit: number_of_apartments
     button: |
@@ -435,7 +422,7 @@ review:
       ${ future_inspection_date.format() }
   - Edit: order_yesno
     button: |
-      Order yesno:
+      I want an additional order:
       ${ word(yesno(order_yesno)) }
   - Edit: order_description
     button: |
@@ -443,15 +430,15 @@ review:
       > ${ single_paragraph(order_description) }
   - Edit: fmv_yesno
     button: |
-      Fmv yesno:
+      I need the judge to calculate the fair market value of my home:
       ${ word(yesno(fmv_yesno)) }
   - Edit: fmv_authorization_yesno
     button: |
-      Fmv authorization yesno:
+      I need the judge to authorize me to pay the reduced fair market value:
       ${ word(yesno(fmv_authorization_yesno)) }
   - Edit: reciever_yesno
     button: |
-      Reciever yesno:
+      I need the judge to appoint a receiver:
       ${ word(yesno(reciever_yesno)) }
   - Edit: trial_court
     button: |
@@ -461,18 +448,14 @@ review:
     button: |
       docket_numbers:
       ${ docket_numbers }
-  - Edit: plaintiffs
+  - Edit: other_parties[0].name.first
     button: |
-      plaintiffs:
-      ${ plaintiffs }
-  - Edit: other_parties
-    button: |
-      Defendants:
+      Name of landlord:
       ${ other_parties }
   - Edit: users[0].address.address
     button: |
-      users[0].address.address:
-      ${ users[0].address.address }
+      My address:
+      ${ users[0].address.on_one_line() }
   - Edit: users[1].signature
     button: |
       users[1].signature:
@@ -489,50 +472,14 @@ review:
     button: |
       users[1]:
       ${ users[1] }
-  - Edit: users[1].address.address
-    button: |
-      users[1].address.address:
-      ${ users[1].address.address }
-  - Edit: users[1].address.zip
-    button: |
-      users[1].address.zip:
-      ${ users[1].address.zip }
-  - Edit: users[0].address.state
-    button: |
-      users[0].address.state:
-      ${ users[0].address.state }
-  - Edit: users[1].address.state
-    button: |
-      users[1].address.state:
-      ${ users[1].address.state }
-  - Edit: users[0].address.city
-    button: |
-      users[0].address.city:
-      ${ users[0].address.city }
-  - Edit: users[1].address.city
-    button: |
-      users[1].address.city:
-      ${ users[1].address.city }
-  - Edit: users[0].address.zip
-    button: |
-      users[0].address.zip:
-      ${ users[0].address.zip }
-  - Edit: users[1].phone_number
-    button: |
-      users[1].phone_number:
-      ${ users[1].phone_number }
   - Edit: users[0].phone_number
     button: |
-      users[0].phone_number:
+      My phone number:
       ${ users[0].phone_number }
   - Edit: users[0].email
     button: |
-      users[0].email:
+      My email:
       ${ users[0].email }
-  - Edit: users[1].email
-    button: |
-      users[1].email:
-      ${ users[1].email }
   - Edit: signature_date
     button: |
       signature_date:
