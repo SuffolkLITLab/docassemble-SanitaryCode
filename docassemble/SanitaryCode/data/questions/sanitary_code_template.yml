@@ -43,51 +43,52 @@ code: |
   al_form_type = 'starts_case'
   # This is a placeholder to control logic flow in this interview 
   if not inspection:
-    kick_out
-  if inspected_already:
-    inspector_name
-  if not inspected_already:
-    future_inspector_name
-  # Set the allowed courts for this interview
-  allowed_courts = interview_metadata["sanitary_code_template"]["allowed courts"]
-  nav.set_section('review_sanitary_code_template')
-  user_role = 'plaintiff'
-  str(plaintiffs)
-  users[0].address.on_one_line()
-  set_progress(27.27)
-  users[0]
-  #users[1]
-  users[0].address.address
-  #users[1].address.address
-  set_progress(36.36)
-  #users[1].address.zip
-  users[0].address.state
-  #users[1].address.state
-  users[0].address.city
-  #users[1].address.city
-  set_progress(45.45)
-  users[0].address.zip
-  users[0].phone_number
-  users[0].email
-  #users[1].phone_number
-  #users[1].email
-  str(other_parties)
-  other_parties[0].address.address
-  number_of_apartments
-  rent_amount
-  petition_explained
-  fmv_yesno
-  reciever_yesno
-  order_yesno
-  set_progress(9.09)
-  # Set the answer file name.
-  set_parts(subtitle=str(users))
-  trial_court
-  set_progress(54.55)
-  # signature_date
-  # Save (anonymized) interview statistics.
-  # store_variables_snapshot(data={'zip': users[0].address.zip})
-  #users[1].signature
+    kick_out # Kickout should be optional in MADE: UpToCode
+  else:    
+    if inspected_already:
+      inspector_name
+    if not inspected_already:
+      future_inspector_name
+    # Set the allowed courts for this interview
+    allowed_courts = interview_metadata["sanitary_code_template"]["allowed courts"]
+    nav.set_section('review_sanitary_code_template')
+    user_role = 'plaintiff'
+    str(plaintiffs)
+    users[0].address.on_one_line()
+    set_progress(27.27)
+    users[0]
+    #users[1]
+    users[0].address.address
+    #users[1].address.address
+    set_progress(36.36)
+    #users[1].address.zip
+    users[0].address.state
+    #users[1].address.state
+    users[0].address.city
+    #users[1].address.city
+    set_progress(45.45)
+    users[0].address.zip
+    users[0].phone_number
+    users[0].email
+    #users[1].phone_number
+    #users[1].email
+    str(other_parties)
+    other_parties[0].address.address
+    number_of_apartments
+    rent_amount
+    petition_explained
+    fmv_yesno
+    reciever_yesno
+    order_yesno
+    set_progress(9.09)
+    # Set the answer file name.
+    set_parts(subtitle=str(users))
+    trial_court
+    set_progress(54.55)
+    # signature_date
+    # Save (anonymized) interview statistics.
+    # store_variables_snapshot(data={'zip': users[0].address.zip})
+    #users[1].signature
   sanitary_code_template = True
 ---
 code: |
