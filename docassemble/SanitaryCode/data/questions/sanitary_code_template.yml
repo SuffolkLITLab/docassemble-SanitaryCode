@@ -348,23 +348,22 @@ attachment:
       - "plaintiffs": ${ plaintiffs }
       - "defendants": ${ other_parties }
       - "plaintiff_address_on_one_line": ${ users[0].address.on_one_line() }
-      # If it is a signature, test which file version we're expecting. leave it empty unless it's the final attachment version
-      - "plaintiff2_signature": ${ users[1].signature_if_final(i) }
       - "plaintiff1_signature": ${ users[0].signature_if_final(i) }
       - "plaintiff1": ${ users[0] }
-      - "plaintiff2": ${ users[1] }
       - "plaintiff1_address_street": ${ users[0].address.address }
-      - "plaintiff2_address_street": ${ users[1].address.address }
-      - "plaintiff2_address_zip": ${ users[1].address.zip }
       - "plaintiff1_address_state": ${ users[0].address.state }
-      - "plaintiff2_address_state": ${ users[1].address.state }
       - "plaintiff1_address_city": ${ users[0].address.city }
-      - "plaintiff2_address_city": ${ users[1].address.city }
       - "plaintiff1_address_zip": ${ users[0].address.zip }
-      - "plaintiff2_phone": ${ users[1].phone_number }
       - "plaintiff1_phone": ${ users[0].phone_numbers() }
       - "plaintiff1_email": ${ users[0].email }
-      - "plaintiff2_email": ${ users[1].email }
+      # - "plaintiff2_signature": ${ users[1].signature_if_final(i) }
+      # - "plaintiff2": ${ users[1] }
+      # - "plaintiff2_address_street": ${ users[1].address.address }
+      # - "plaintiff2_address_zip": ${ users[1].address.zip }
+      # - "plaintiff2_address_state": ${ users[1].address.state }
+      # - "plaintiff2_address_city": ${ users[1].address.city }
+      # - "plaintiff2_phone": ${ users[1].phone_number }
+      # - "plaintiff2_email": ${ users[1].email }     
       - "signature_date": ${ signature_date }
       - "defendant_address": ${ other_parties[0].address.on_one_line() }
       - "number_of_apartments": ${ number_of_apartments }
@@ -457,10 +456,6 @@ review:
     button: |
       My address:
       ${ users[0].address.on_one_line() }
-  - Edit: users[1].signature
-    button: |
-      users[1].signature:
-      ${ users[1].signature }
   - Edit: users[0].signature
     button: |
       users[0].signature:
@@ -469,10 +464,6 @@ review:
     button: |
       Your name:
       ${ users[0] }
-  - Edit: users[1]
-    button: |
-      users[1]:
-      ${ users[1] }
   - Edit: users[0].phone_number
     button: |
       My phone number:
